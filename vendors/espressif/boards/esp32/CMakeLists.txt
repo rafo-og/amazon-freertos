@@ -427,13 +427,15 @@ if (NOT IDF_EXECUTABLE_SRCS)
     set(IDF_EXECUTABLE_SRCS "${board_dir}/application_code/main.c" ${extra_exe_sources})
 endif()
 
+set(RDLR_project_elf ${IDF_PROJECT_EXECUTABLE}.elf)
+
 add_executable(
-    ${IDF_PROJECT_EXECUTABLE}
+    ${RDLR_project_elf}
     ${IDF_EXECUTABLE_SRCS}
 )
 
 target_include_directories(
-    ${IDF_PROJECT_EXECUTABLE}
+    ${RDLR_project_elf}
     PUBLIC
         "${esp_idf_dir}/components/esp_ringbuf/include"
         $<TARGET_PROPERTY:AFR::kernel,INTERFACE_INCLUDE_DIRECTORIES>
@@ -442,7 +444,7 @@ target_include_directories(
 )
 
 target_link_libraries(
-    ${IDF_PROJECT_EXECUTABLE}
+    ${RDLR_project_elf}
     PRIVATE
         AFR::wifi
         AFR::utils
@@ -572,7 +574,8 @@ set(IDF_BUILD_ARTIFACTS_DIR ${CMAKE_BINARY_DIR})
 
 set(CMAKE_STATIC_LIBRARY_PREFIX "lib")
 
-set_property(GLOBAL PROPERTY IDF_PROJECT_EXECUTABLE ${IDF_PROJECT_EXECUTABLE})
+#set_property(GLOBAL PROPERTY IDF_PROJECT_EXECUTABLE ${IDF_PROJECT_EXECUTABLE})
+set_property(GLOBAL PROPERTY RDLR_project_elf ${RDLR_project_elf})
 
 get_filename_component(
     ABS_EXTRA_COMPONENT_DIRS
@@ -633,9 +636,9 @@ target_compile_options(
 idf_build_set_property(PROJECT_NAME ${IDF_PROJECT_EXECUTABLE})
 idf_build_set_property(EXECUTABLE_NAME ${IDF_PROJECT_EXECUTABLE})
 idf_build_set_property(PROJECT_DIR ${AFR_ROOT_DIR})
-idf_build_set_property(EXECUTABLE ${IDF_PROJECT_EXECUTABLE})
+idf_build_set_property(EXECUTABLE ${RDLR_project_elf})
 idf_project_generate_description_file(${CMAKE_BINARY_DIR}/project_description.json)
-idf_build_executable(${IDF_PROJECT_EXECUTABLE})
+idf_build_executable(${RDLR_project_elf})
 idf_build_set_property(EXECUTABLE_DIR ${CMAKE_BINARY_DIR})
 
 # This is a hack to have IDF build system use PRIVATE keyword when
@@ -644,7 +647,7 @@ idf_build_set_property(EXECUTABLE_DIR ${CMAKE_BINARY_DIR})
 # for the same target.
 function(target_link_libraries)
     set(_args ARGV)
-    get_property(exe_target GLOBAL PROPERTY IDF_PROJECT_EXECUTABLE)
+    get_property(exe_target GLOBAL PROPERTY RDLR_project_elf)
     if (${ARGV0} STREQUAL ${exe_target})
         list(INSERT ${_args} 1 PRIVATE)
     endif()

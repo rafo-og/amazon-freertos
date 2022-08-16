@@ -33,7 +33,7 @@ set(AFR_VERSION "${PROJECT_VERSION}")
 set(AFR_VERSION_VCS "Unknown" CACHE INTERNAL "")
 # Check if we're in a Git repository.
 find_package(Git)
-if(Git_FOUND AND EXISTS "${AFR_ROOT_DIR}/.git")
+if(Git_FOUND AND EXISTS "${AFR_ROOT_DIR}/.git" AND AFR_ALLOW_SUBMODULE_UPDATE)
     if(${BUILD_CLONE_SUBMODULES})
         message(STATUS "Submodule update")
         # TODO: Update submodule only if it hasn't been checked out (check if directory is empty).
