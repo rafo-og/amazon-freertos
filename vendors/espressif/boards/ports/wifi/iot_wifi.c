@@ -229,8 +229,9 @@ static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_
                     xEventGroupSetBits(wifi_event_group, CONNECTED_BIT);
                     if( xWifiEventHandlers[ eWiFiEventIPReady ] != NULL )
                     {
+                        ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
                         eventInfo.xEventType = eWiFiEventIPReady;
-                        eventInfo.xInfo.xIPReady.xIPAddress.ulAddress[ 0 ] = info->got_ip.ip_info.ip.addr;
+                        eventInfo.xInfo.xIPReady.xIPAddress.ulAddress[ 0 ] = event->ip_info.ip.addr;
                         xWifiEventHandlers[ eWiFiEventIPReady ]( &eventInfo );
                     }
                     break;
